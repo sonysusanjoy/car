@@ -9,18 +9,18 @@ class BlablacarsSpider(scrapy.Spider):
     name = 'blablacars'
     allowed_domains = ['www.blablacar.in/ride-sharing/new-delhi/chandigarh/?fn=New+Delhi']
     #start_urls = ['https://www.blablacar.in/ride-sharing/new-delhi/chandigarh/#?fn=new+delhi&fcc=IN&tn=chandigarh&tcc=IN&sort=trip_date&order=asc&limit=10&page=%d' % page for page in xrange(1,22)]
-    #start_urls = ['https://www.blablacar.in/trip-delhi-chandigarh-966132846']
+    #start_urls = ['https://www.blablacar.in/ride-sharing/new-delhi/chandigarh/?fn=New+Delhi&fc=28.6139391%7C77.2090212&fcc=IN&fp=0&tn=Chandigarh&tc=30.7333148%7C76.7794179&tcc=IN&tp=0&sort=trip_date&order=asc&radius=48.858&limit=10&page=19&v=default']
+
     temp = []
     for page in range(1, 22):
-        pages = 'https://www.blablacar.in/ride-sharing/new-delhi/chandigarh/#?fn=new+delhi&fcc=IN&tn=chandigarh&tcc=IN&sort=trip_date&order=asc&limit=10&page' + str(page)
+        pages = 'https://www.blablacar.in/ride-sharing/new-delhi/chandigarh/?fn=New+Delhi&fc=28.6139391%7C77.2090212&fcc=IN&fp=0&tn=Chandigarh&tc=30.7333148%7C76.7794179&tcc=IN&tp=0&sort=trip_date&order=asc&radius=48.858&limit=10&page=' + str(page) 
         temp.append(pages)
-    start_urls = temp
-    
+    start_urls = temp 
+
     def parse(self, response):
      link = []
      for link in set(response.xpath('//ul[@class="trip-search-results"]/li/a/@href').extract()):
 	 links = urlparse.urljoin(response.url, str(link))
-	 print links
          yield scrapy.Request(links,callback=self.parse_following_urls,dont_filter=True)
 
     def parse_following_urls(self, response): 
@@ -76,6 +76,6 @@ class BlablacarsSpider(scrapy.Spider):
 			"Car_rating" :'',
 	           	"Car_color" :car_color
 	    	}
-         yield output 
+         yield output
  	     
 
