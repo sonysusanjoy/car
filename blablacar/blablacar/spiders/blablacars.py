@@ -4,11 +4,18 @@ import urlparse
 from scrapy.spiders import Spider
 from scrapy.http import Request
 
+
 class BlablacarsSpider(scrapy.Spider):
     name = 'blablacars'
     allowed_domains = ['www.blablacar.in/ride-sharing/new-delhi/chandigarh/?fn=New+Delhi']
-    start_urls = ['http://www.blablacar.in/ride-sharing/new-delhi/chandigarh/?fn=New+Delhi/']
-
+    #start_urls = ['https://www.blablacar.in/ride-sharing/new-delhi/chandigarh/#?fn=new+delhi&fcc=IN&tn=chandigarh&tcc=IN&sort=trip_date&order=asc&limit=10&page=%d' % page for page in xrange(1,22)]
+    #start_urls = ['https://www.blablacar.in/trip-delhi-chandigarh-966132846']
+    temp = []
+    for page in range(1, 22):
+        pages = 'https://www.blablacar.in/ride-sharing/new-delhi/chandigarh/#?fn=new+delhi&fcc=IN&tn=chandigarh&tcc=IN&sort=trip_date&order=asc&limit=10&page' + str(page)
+        temp.append(pages)
+    start_urls = temp
+    
     def parse(self, response):
      link = []
      for link in set(response.xpath('//ul[@class="trip-search-results"]/li/a/@href').extract()):
@@ -16,7 +23,7 @@ class BlablacarsSpider(scrapy.Spider):
 	 print links
          yield scrapy.Request(links,callback=self.parse_following_urls,dont_filter=True)
 
-    def parse_following_urls(self, response):
+    def parse_following_urls(self, response): 
          source =  response.xpath('//span[@class="RideName-location RideName-location--arrowAfter"]/text()').extract_first()
          #print source
 	 destination = response.xpath('//span[@class="RideName-location"]/text()').extract_first()
@@ -69,6 +76,6 @@ class BlablacarsSpider(scrapy.Spider):
 			"Car_rating" :'',
 	           	"Car_color" :car_color
 	    	}
-         yield output   
+         yield output 
  	     
 
